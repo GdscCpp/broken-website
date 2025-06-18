@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Chosen Palette: Chaotic Disharmony (High contrast, clashing colors) -->
+    <!-- Application Structure Plan: The SPA is structured to intentionally demonstrate SDLC failures. It uses a tab-like navigation to switch between disparate, unfocused product categories (the 'feature bloat' from bad requirements). Each section is designed to showcase specific flaws: the clothing product view has jarring style changes and an XSS vulnerability in reviews, the cart has broken logic, user registration (implied via review submission) has weak validation, and the layout is intentionally non-responsive. This structure was chosen not for usability, but to create a 'guided tour' of mistakes, allowing a learner to experience each bad practice interactively and understand its direct consequence. -->
+    <!-- Visualization & Content Choices: This application translates the abstract 'Broken Ideas' report into tangible website elements. (Requirements) Feature bloat -> Implemented as confusing navigation tabs. No search/checkout -> Key elements are physically missing. (Design) Visual chaos -> Implemented with clashing CSS classes for different sections. Non-responsive -> Implemented with fixed-width containers. (Implementation) XSS -> Implemented with a raw innerHTML update from an unsanitized review form. Hardcoded data -> Products are static HTML blocks, not generated from a JS array. (Testing) Broken Cart -> JS logic is deliberately flawed to fail on multiple items. (Maintenance) Broken links/silent forms -> Implemented with dead links and forms that provide fake success messages. NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegance Emporium - Style... or Something?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            overflow-x: hidden; /* Hide the ugly horizontal scrollbar caused by non-responsiveness */
+        }
+        .main-container {
+            width: 1200px; /* BROKEN: Fixed width for zero responsiveness */
+            margin: 0 auto;
+        }
+        .low-contrast-button {
+            background-color: #333333; /* Dark grey */
+            color: #E0E0E0; /* Light grey */
+            border: 1px solid #666666; /* Medium grey */
+        }
+        .product-page-style-clothing {
+            background-color: #FFFFFF;
+            color: #39FF14; /* BROKEN: Neon green text, terrible contrast on white */
+        }
+        .chaotic-nav {
+            transition: all 0.5s ease-in-out;
+            position: absolute; /* BROKEN: Positioning is random for each click */
+            z-index: 10;
+        }
+        /* BROKEN: Deliberately bad style to make Firefox render differently */
+        @-moz-document url-prefix() {
+          .product-grid {
+            display: inline-block !important;
+          }
+        }
+        .hidden-checkout {
+            color: #FFF0F5; /* Floral White */
+            text-decoration: none;
+        }
+        .hidden-checkout:hover {
+            color: #FFDAB9; /* Peach Puff */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="main-container">
+        
+        <!-- 2. DESIGN: Navigation Nightmare -->
+        <nav id="chaotic-nav" class="chaotic-nav bg-blue-900 p-4 text-white rounded-lg top-10 left-40">
+            <ul class="flex space-x-8">
+                <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-apparel">Elegance Apparel</a></li>
+                <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-produce">Organic Produce</a></li>
+                <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-cars">Vintage Car Parts</a></li>
+                <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-robotics">Advanced Robotics</a></li>
+            </ul>
+        </nav>
+
+        <header class="text-center py-20 bg-emerald-900 text-white">
+            <h1 class="text-6xl font-extrabold" style="font-family: 'Brush Script MT', 'cursive';">Elegance Emporium</h1>
+            <p class="mt-4 text-lg">Your premier destination for... well, everything we decided to sell!</p>
+            <!-- 6. MAINTENANCE: Outdated Content -->
+            <p class="mt-2 text-yellow-400">GRAND OPENING SALE! All items 70% off! (Offer expired February 2024)</p>
+        </header>
+        
+        <!-- Cart Icon -->
+        <div class="fixed top-5 right-5 z-20">
+            <button id="cart-button" class="bg-purple-600 text-white p-4 rounded-full shadow-lg">
+                <span id="cart-count">0</span> 🛍️
+            </button>
+        </div>
+
+        <!-- Cart Modal -->
+        <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 flex justify-center items-center">
+            <div class="bg-white p-8 rounded-lg w-1/2">
+                <h2 class="text-2xl font-bold mb-4">Your Shopping Cart</h2>
+                <div id="cart-items">
+                    <p>Your cart is empty.</p>
+                </div>
+                <!-- 4. TESTING: Core Functionality Fails -->
+                <p class="text-xl font-bold mt-4">Total: $<span id="cart-total">0.00</span></p>
+                <p class="text-sm text-red-600">Note: Our cart sometimes calculates strangely. Prices may vary upon checkout.</p>
+                <button id="close-cart-button" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+                <p class="text-xs mt-4">Need to finalize your purchase? <a href="#" onclick="alert('Payment Gateway Error: Unreliable connection. Try again... or maybe not?')" class="hidden-checkout">Click here for the secret checkout portal.</a></p>
+            </div>
+        </div>
+
+        <main id="main-content" class="p-8">
+            <!-- 1. REQUIREMENTS: Feature Bloat - Apparel Section -->
+            <div id="page-apparel" class="page-content">
+                <h2 class="text-3xl font-bold mb-6 text-center">Our Elegance Apparel Collection</h2>
+                <!-- 3. IMPLEMENTATION: Hardcoded Data -->
+                <div class="grid grid-cols-3 gap-6 product-grid">
+                    <div class="border p-4 rounded-lg shadow bg-white">
+                        <img src="https://placehold.co/400x300/a8a29e/ffffff?text=Classic+Denim+Jeans" alt="Denim Jeans" class="w-full h-48 object-cover rounded mb-4">
+                        <h3 class="text-xl font-bold">Classic Denim Jeans</h3>
+                        <p class="text-gray-600 my-2">Timeless style, questionable comfort.</p>
+                        <p class="text-2xl font-bold text-green-600">$49.99</p>
+                        <!-- 3. IMPLEMENTATION: Spaghetti Code & 2. DESIGN: Lack of Feedback -->
+                        <button class="mt-4 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 w-full" onclick="addToCart('Classic Denim Jeans', 49.99)">Add to Cart</button>
+                    </div>
+                    <div class="border p-4 rounded-lg shadow bg-white">
+                        <img src="https://placehold.co/400x300/8b5cf6/ffffff?text=Floral+Summer+Dress" alt="Summer Dress" class="w-full h-48 object-cover rounded mb-4">
+                        <h3 class="text-xl font-bold">Floral Summer Dress</h3>
+                        <p class="text-gray-600 my-2">Perfect for garden parties, or staying home.</p>
+                        <p class="text-2xl font-bold text-green-600">$75.00</p>
+                        <button class="mt-4 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 w-full" onclick="addToCart('Floral Summer Dress', 75.00)">Add to Cart</button>
+                    </div>
+                    <div class="border p-4 rounded-lg shadow bg-white">
+                        <img src="https://placehold.co/400x300/fca5a5/ffffff?text=Cozy+Knit+Sweater" alt="Knit Sweater" class="w-full h-48 object-cover rounded mb-4">
+                        <h3 class="text-xl font-bold">Cozy Knit Sweater</h3>
+                        <p class="text-gray-600 my-2">Warning: May contain wool. Or not.</p>
+                        <p class="text-2xl font-bold text-green-600">$34.90</p>
+                         <button class="mt-4 low-contrast-button px-6 py-2 rounded w-full" onclick="addToCart('Cozy Knit Sweater', 34.90)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. REQUIREMENTS: Feature Bloat - Other Sections -->
+            <div id="page-produce" class="page-content hidden bg-yellow-100 p-8">
+                 <h2 class="text-3xl font-bold mb-6 text-center text-yellow-800">Fresh Organic Produce</h2>
+                 <p class="text-center">Because your wardrobe needs carrots.</p>
+            </div>
+            <div id="page-cars" class="page-content hidden bg-red-100 p-8">
+                 <h2 class="text-3xl font-bold mb-6 text-center text-red-800">Vintage Car Parts</h2>
+                 <p class="text-center">For when your fashion needs a spark plug.</p>
+            </div>
+            <div id="page-robotics" class="page-content hidden product-page-style-clothing p-8">
+                 <h2 class="text-3xl font-bold mb-6 text-center">Advanced Robotics Kits</h2>
+                 <p class="text-center">Build a robot, but make it fashion. Or don't.</p>
+                 <hr>
+                 <div id="review-section" class="mt-8">
+                    <h3 class="text-2xl font-bold">Product Reviews</h3>
+                    <div id="reviews-list" class="mt-4 space-y-4">
+                        <!-- Reviews will be injected here -->
+                    </div>
+                    <!-- 3. IMPLEMENTATION: XSS Vulnerability -->
+                    <div class="mt-6">
+                        <h4 class="text-xl font-bold">Leave a Review</h4>
+                        <textarea id="review-text" class="w-full mt-2 p-2 border rounded bg-gray-200 text-black" rows="3" placeholder="Tell us what you think! You can even use HTML!"></textarea>
+                        <button id="submit-review" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Submit Review</button>
+                    </div>
+                 </div>
+            </div>
+
+        </main>
+
+        <footer class="text-center p-10 bg-gray-800 text-gray-400 mt-10">
+            <!-- 6. MAINTENANCE: Broken Links & Outdated Content -->
+            <p>&copy; 2022 Elegance Emporium. All Rights Reserved. (But not really)</p>
+            <div class="mt-4">
+                <a href="/our-story-page-404" class="mx-2 hover:text-white">Our Story</a>
+                <a href="#" onclick="showContactForm()" class="mx-2 hover:text-white">Contact Us</a>
+                <a href="/outdated-privacy-policy" class="mx-2 hover:text-white">Privacy Policy</a>
+            </div>
+            <!-- 5. DEPLOYMENT: Hinting at bad practices -->
+            <p class="text-xs mt-4 text-gray-500">Last stable deployment: 29th Feb 2024. If things are broken, it's probably you.</p>
+        </footer>
+    </div>
+    
+    <!-- 6. MAINTENANCE: Silent Failures -->
+    <div id="contact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 flex justify-center items-center">
+        <div class="bg-white p-8 rounded-lg">
+             <h2 class="text-2xl font-bold mb-4">Get In Touch!</h2>
+             <input class="border p-2 w-full mb-2" placeholder="Your Email">
+             <textarea class="border p-2 w-full" placeholder="Your Message"></textarea>
+             <button id="send-contact-form" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Send Message</button>
+             <button onclick="document.getElementById('contact-modal').classList.add('hidden')" class="ml-2 bg-gray-300 px-4 py-2 rounded">Cancel</button>
+        </div>
+    </div>
+
+
+<script>
+    // 3. IMPLEMENTATION: Disorganized Spaghetti Code
+    // All JS in one big block, with global variables and messy logic.
+
+    const cart = [];
+    let cartTotal = 0;
+
+    function addToCart(name, price) {
+        cart.push({ name, price });
+        // BROKEN: Lack of feedback. We should show a message here.
+        updateCart();
+    }
+    
+    function updateCart() {
+        const cartCount = document.getElementById('cart-count');
+        const cartItemsDiv = document.getElementById('cart-items');
+        const cartTotalSpan = document.getElementById('cart-total');
+
+        cartCount.innerText = cart.length;
+        
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+            cartTotal = 0;
+        } else {
+            cartItemsDiv.innerHTML = '';
+            // 4. TESTING: Logic error under load / string concatenation
+            // BROKEN: Resetting a number with a string to cause issues
+            cartTotal = ''; 
+            cart.forEach(item => {
+                cartItemsDiv.innerHTML += `<p>${item.name} - $${item.price.toFixed(2)}</p>`;
+                // This will work for one item, but concatenate for more.
+                // e.g. '49.99' + 75.00 = '49.9975'
+                cartTotal = cartTotal + item.price;
+            });
+        }
+        
+        // Try to fix the broken total, but in a hacky way
+        let fixedTotal = parseFloat(cartTotal);
+        if(isNaN(fixedTotal)) {
+           // If it's the concatenated string, it will be NaN.
+           // This is a terrible, inefficient way to fix the problem.
+           let actualTotal = 0;
+           cart.forEach(item => { actualTotal += item.price; });
+           fixedTotal = actualTotal;
+        }
+
+        cartTotalSpan.innerText = fixedTotal.toFixed(2);
+    }
+    
+    document.getElementById('cart-button').addEventListener('click', () => {
+        document.getElementById('cart-modal').classList.remove('hidden');
+    });
+    
+    document.getElementById('close-cart-button').addEventListener('click', () => {
+        document.getElementById('cart-modal').classList.add('hidden');
+    });
+
+    // Page navigation logic
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pages = document.querySelectorAll('.page-content');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('data-target');
+            
+            pages.forEach(page => {
+                if (page.id === targetId) {
+                    page.classList.remove('hidden');
+                } else {
+                    page.classList.add('hidden');
+                }
+            });
+            // 2. DESIGN: Chaos! Move the nav randomly for each click.
+            const nav = document.getElementById('chaotic-nav');
+            const positions = [
+                { top: '2rem', left: '1rem', right: 'auto', bottom: 'auto', transform: 'none' },
+                { top: 'auto', left: 'auto', right: '2rem', bottom: '5rem', transform: 'none' },
+                { top: '10rem', left: 'auto', right: '1rem', bottom: 'auto', transform: 'none' },
+                { top: '5rem', left: '50%', right: 'auto', transform: 'translateX(-50%)', bottom: 'auto' },
+                { top: 'auto', left: '5rem', right: 'auto', bottom: '2rem', transform: 'none' },
+            ];
+            const randomPos = positions[Math.floor(Math.random() * positions.length)];
+            Object.assign(nav.style, randomPos);
+        });
+    });
+
+    // 3. IMPLEMENTATION: XSS Vulnerability
+    document.getElementById('submit-review').addEventListener('click', () => {
+        const reviewText = document.getElementById('review-text').value;
+        const reviewsList = document.getElementById('reviews-list');
+        const newReview = document.createElement('div');
+        newReview.className = 'border p-3 rounded bg-gray-800 text-white';
+        // BROKEN: Directly setting innerHTML from user input allows scripts to run.
+        // Try submitting this in the review box: <img src=x onerror="alert('XSS Vulnerability!')">
+        newReview.innerHTML = reviewText; 
+        reviewsList.appendChild(newReview);
+        document.getElementById('review-text').value = '';
+    });
+    
+    // 6. MAINTENANCE: Silent failure for contact form
+    function showContactForm() {
+        document.getElementById('contact-modal').classList.remove('hidden');
+    }
+    
+    document.getElementById('send-contact-form').addEventListener('click', () => {
+        document.getElementById('contact-modal').classList.add('hidden');
+        // BROKEN: Give fake success message but do nothing in the backend.
+        alert('Thank you for your message! We will get back to you... eventually, maybe.');
+    });
+
+</script>
+
+</body>
+</html>
