@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <!-- Chosen Palette: Chaotic Disharmony (High contrast, clashing colors) -->
-    <!-- Application Structure Plan: The SPA is structured to intentionally demonstrate SDLC failures. It uses a tab-like navigation to switch between disparate, unfocused product categories (the 'feature bloat' from bad requirements). Each section is designed to showcase specific flaws: the clothing product view has jarring style changes and an XSS vulnerability in reviews, the cart has broken logic, user registration (implied via review submission) has weak validation, and the layout is intentionally non-responsive. This structure was chosen not for usability, but to create a 'guided tour' of mistakes, allowing a learner to experience each bad practice interactively and understand its direct consequence. -->
-    <!-- Visualization & Content Choices: This application translates the abstract 'Broken Ideas' report into tangible website elements. (Requirements) Feature bloat -> Implemented as confusing navigation tabs. No search/checkout -> Key elements are physically missing. (Design) Visual chaos -> Implemented with clashing CSS classes for different sections. Non-responsive -> Implemented with fixed-width containers. (Implementation) XSS -> Implemented with a raw innerHTML update from an unsanitized review form. Hardcoded data -> Products are static HTML blocks, not generated from a JS array. (Testing) Broken Cart -> JS logic is deliberately flawed to fail on multiple items. (Maintenance) Broken links/silent forms -> Implemented with dead links and forms that provide fake success messages. NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Application Structure Plan: The SPA is structured to intentionally demonstrate SDLC failures. It uses a top-fixed navigation to switch between disparate, unfocused product categories (the 'feature bloat' from bad requirements). Each section is designed to showcase specific flaws: the clothing product view has jarring style changes, inconsistent button styles, poor text contrast, and an XSS vulnerability in reviews; the cart has broken logic, user registration (implied via review submission) has weak validation; and the layout is intentionally non-responsive. This structure was chosen not for usability, but to create a 'guided tour' of mistakes, allowing a learner to experience each bad practice interactively and understand its direct consequence. -->
+    <!-- Visualization & Content Choices: This application translates the abstract 'Broken Ideas' report into tangible website elements. (Requirements) Feature bloat -> Implemented as confusing navigation tabs. No search/checkout -> Key elements are physically missing. (Design) Visual chaos, Inconsistent UI & Poor Contrast -> Implemented with clashing CSS classes for different sections, varying button styles, and low-contrast text on product cards. Non-responsive -> Implemented with fixed-width containers. (Implementation) XSS -> Implemented with a raw innerHTML update from an unsanitized review form. Hardcoded data -> Products are static HTML blocks, not generated from a JS array. (Testing) Broken Cart -> JS logic is deliberately flawed to fail on multiple items. (Maintenance) Broken links/silent forms -> Implemented with dead links and forms that provide fake success messages. NO SVG graphics used. NO Mermaid JS used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <meta charset="UTF-8">
@@ -19,19 +19,21 @@
             width: 1200px; /* BROKEN: Fixed width for zero responsiveness */
             margin: 0 auto;
         }
+        /* BROKEN: Low contrast button, now more widespread */
         .low-contrast-button {
             background-color: #333333; /* Dark grey */
-            color: #E0E0E0; /* Light grey */
+            color: #E0E0E0; /* Light grey, poor contrast on dark grey */
             border: 1px solid #666666; /* Medium grey */
         }
+        /* BROKEN: Neon green text, terrible contrast on white */
         .product-page-style-clothing {
             background-color: #FFFFFF;
-            color: #39FF14; /* BROKEN: Neon green text, terrible contrast on white */
+            color: #39FF14;
         }
-        .chaotic-nav {
-            transition: all 0.5s ease-in-out;
-            position: absolute; /* BROKEN: Positioning is random for each click */
-            z-index: 10;
+        /* Consistent nav style for now, focus on other broken design elements */
+        #main-nav {
+            background-color: #1a202c; /* Consistent dark background */
+            justify-content: flex-start; /* Consistent alignment */
         }
         /* BROKEN: Deliberately bad style to make Firefox render differently */
         @-moz-document url-prefix() {
@@ -46,15 +48,39 @@
         .hidden-checkout:hover {
             color: #FFDAB9; /* Peach Puff */
         }
+        /* BROKEN: Inconsistent button styles */
+        .button-variant-1 {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .button-variant-2 {
+            background-color: #f44336; /* Red */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-style: italic;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .button-variant-3 {
+            background-color: transparent;
+            color: #2196F3; /* Blue */
+            border: 2px solid #2196F3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div class="main-container">
         
-        <!-- 2. DESIGN: Navigation Nightmare -->
-        <nav id="chaotic-nav" class="chaotic-nav bg-blue-900 p-4 text-white rounded-lg top-10 left-40">
-            <ul class="flex space-x-8">
+        <!-- 2. DESIGN: Consistent Nav Bar, but other UI is broken -->
+        <nav id="main-nav" class="fixed top-0 left-0 w-full p-4 text-white z-10">
+            <ul class="flex space-x-8 justify-start" id="nav-list">
                 <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-apparel">Elegance Apparel</a></li>
                 <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-produce">Organic Produce</a></li>
                 <li><a href="#" class="nav-link hover:text-cyan-300" data-target="page-cars">Vintage Car Parts</a></li>
@@ -62,7 +88,7 @@
             </ul>
         </nav>
 
-        <header class="text-center py-20 bg-emerald-900 text-white">
+        <header class="text-center py-20 bg-emerald-900 text-white mt-16"> <!-- Added mt-16 to push content below fixed nav -->
             <h1 class="text-6xl font-extrabold" style="font-family: 'Brush Script MT', 'cursive';">Elegance Emporium</h1>
             <p class="mt-4 text-lg">Your premier destination for... well, everything we decided to sell!</p>
             <!-- 6. MAINTENANCE: Outdated Content -->
@@ -101,23 +127,26 @@
                         <img src="https://placehold.co/400x300/a8a29e/ffffff?text=Classic+Denim+Jeans" alt="Denim Jeans" class="w-full h-48 object-cover rounded mb-4">
                         <h3 class="text-xl font-bold">Classic Denim Jeans</h3>
                         <p class="text-gray-600 my-2">Timeless style, questionable comfort.</p>
-                        <p class="text-2xl font-bold text-green-600">$49.99</p>
-                        <!-- 3. IMPLEMENTATION: Spaghetti Code & 2. DESIGN: Lack of Feedback -->
-                        <button class="mt-4 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 w-full" onclick="addToCart('Classic Denim Jeans', 49.99)">Add to Cart</button>
+                        <!-- 2. DESIGN: Poor contrast text -->
+                        <p class="text-2xl font-bold" style="color: #6B7280;">$49.99</p> 
+                        <!-- 2. DESIGN: Inconsistent Button Style 1 -->
+                        <button class="mt-4 button-variant-1 w-full" onclick="addToCart('Classic Denim Jeans', 49.99)">Add to Cart</button>
                     </div>
                     <div class="border p-4 rounded-lg shadow bg-white">
                         <img src="https://placehold.co/400x300/8b5cf6/ffffff?text=Floral+Summer+Dress" alt="Summer Dress" class="w-full h-48 object-cover rounded mb-4">
                         <h3 class="text-xl font-bold">Floral Summer Dress</h3>
                         <p class="text-gray-600 my-2">Perfect for garden parties, or staying home.</p>
                         <p class="text-2xl font-bold text-green-600">$75.00</p>
-                        <button class="mt-4 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 w-full" onclick="addToCart('Floral Summer Dress', 75.00)">Add to Cart</button>
+                        <!-- 2. DESIGN: Inconsistent Button Style 2 -->
+                        <button class="mt-4 button-variant-2 w-full" onclick="addToCart('Floral Summer Dress', 75.00)">Add to Cart</button>
                     </div>
                     <div class="border p-4 rounded-lg shadow bg-white">
                         <img src="https://placehold.co/400x300/fca5a5/ffffff?text=Cozy+Knit+Sweater" alt="Knit Sweater" class="w-full h-48 object-cover rounded mb-4">
                         <h3 class="text-xl font-bold">Cozy Knit Sweater</h3>
                         <p class="text-gray-600 my-2">Warning: May contain wool. Or not.</p>
                         <p class="text-2xl font-bold text-green-600">$34.90</p>
-                         <button class="mt-4 low-contrast-button px-6 py-2 rounded w-full" onclick="addToCart('Cozy Knit Sweater', 34.90)">Add to Cart</button>
+                        <!-- 2. DESIGN: Inconsistent Button Style 3 -->
+                        <button class="mt-4 button-variant-3 w-full" onclick="addToCart('Cozy Knit Sweater', 34.90)">Add to Cart</button>
                     </div>
                 </div>
             </div>
@@ -249,18 +278,13 @@
                     page.classList.add('hidden');
                 }
             });
-            // 2. DESIGN: Chaos! Move the nav randomly for each click.
-            const nav = document.getElementById('chaotic-nav');
-            const positions = [
-                { top: '2rem', left: '1rem', right: 'auto', bottom: 'auto', transform: 'none' },
-                { top: 'auto', left: 'auto', right: '2rem', bottom: '5rem', transform: 'none' },
-                { top: '10rem', left: 'auto', right: '1rem', bottom: 'auto', transform: 'none' },
-                { top: '5rem', left: '50%', right: 'auto', transform: 'translateX(-50%)', bottom: 'auto' },
-                { top: 'auto', left: '5rem', right: 'auto', bottom: '2rem', transform: 'none' },
-            ];
-            const randomPos = positions[Math.floor(Math.random() * positions.length)];
-            Object.assign(nav.style, randomPos);
+            // Nav bar now remains static, demonstrating fixed design elements (a partial fix in itself)
         });
+    });
+
+    // Initialize first page and nav style on load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('page-apparel').classList.remove('hidden');
     });
 
     // 3. IMPLEMENTATION: XSS Vulnerability
