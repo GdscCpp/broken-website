@@ -1,0 +1,61 @@
+        body {
+            font-family: 'Times New Roman', serif;
+            overflow-x: hidden; /* Hide the ugly horizontal scrollbar caused by non-responsiveness */
+        }
+        .main-container {
+            width: 1200px; /* BROKEN: Fixed width for zero responsiveness */
+            margin: 0 auto;
+        }
+        /* BROKEN: Low contrast button, now more widespread */
+        .low-contrast-button {
+            background-color: #333333; /* Dark grey */
+            color: #E0E0E0; /* Light grey, poor contrast on dark grey */
+            border: 1px solid #666666; /* Medium grey */
+        }
+        /* BROKEN: Neon green text, terrible contrast on white */
+        .product-page-style-clothing {
+            background-color: #FFFFFF;
+            color: #39FF14;
+        }
+        /* Consistent nav style for now, focus on other broken design elements */
+        #main-nav {
+            background-color: #1a202c; /* Consistent dark background */
+            justify-content: flex-start; /* Consistent alignment */
+        }
+        /* BROKEN: Deliberately bad style to make Firefox render differently */
+        @-moz-document url-prefix() {
+          .product-grid {
+            display: inline-block !important;
+          }
+        }
+        .hidden-checkout {
+            color: #FFF0F5; /* Floral White */
+            text-decoration: none;
+        }
+        .hidden-checkout:hover {
+            color: #FFDAB9; /* Peach Puff */
+        }
+        /* BROKEN: Inconsistent button styles */
+        .button-variant-1 {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .button-variant-2 {
+            background-color: #f44336; /* Red */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-style: italic;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .button-variant-3 {
+            background-color: transparent;
+            color: #2196F3; /* Blue */
+            border: 2px solid #2196F3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
