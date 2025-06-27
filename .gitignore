@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/results/ # If you configure custom test reports output here
+cypress/integration/ # You might keep your .cy.js files, but if you have large auto-generated ones, you'd ignore them. For your elegance_bugs.cy.js, you'll likely want to keep it.
+cypress/downloads/ # If Cypress downloads files during tests
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Editor and OS specific files
+.vscode/        # VS Code specific settings (user-specific)
+.idea/          # IntelliJ/WebStorm specific settings
+.DS_Store       # macOS specific
+Thumbs.db       # Windows specific
+
+# Build artifacts (if you later introduce a build step)
+build/
+dist/
+out/
